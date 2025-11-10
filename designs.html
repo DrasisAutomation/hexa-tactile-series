@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumi Configurator - My Designs</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1e40af;
+            --primary-light: #f0f5ff;
+            --text-primary: #1e293b;
+            --text-secondary: #4a5568;
+            --surface: #ffffff;
+            --surface-alt: #f9fafc;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', system-ui, Arial, sans-serif;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: relative;
+            width: 100vw;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            z-index: 999;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .brand-logo {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 0 24px;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        /* Design Grid */
+        .design-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .design-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Summary Container */
+        .summary-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .summary-preview {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .summary-details {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .summary-preview h4,
+        .summary-details h4 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 8px;
+        }
+
+        /* Preview Box */
+        .preview-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .preview-box {
+            width: 340px;
+            aspect-ratio: 1 / 1;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: 1fr;
+            gap: 2px;
+            box-shadow: 0 10px 30px rgba(2, 6, 23, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .box {
+            border-radius: 2px;
+            border: 1px solid #a1a1a1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            letter-spacing: .3px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, .02), rgba(0, 0, 0, .04));
+            position: relative;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+
+        .box-top,
+        .box-bottom {
+            width: 100%;
+            text-align: center;
+            padding: 16px 0;
+            font-weight: bold;
+            font-size: clamp(10px, 2.5vw, 14px);
+            min-height: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+            color: white;
+        }
+
+        /* Summary Table */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .summary-table th,
+        .summary-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .summary-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .summary-table td:first-child {
+            font-weight: 600;
+            color: #495057;
+            width: 40%;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .deleteBtn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .deleteBtn:hover {
+            background: #c82333;
+        }
+
+        .printAll {
+            background: var(--primary);
+            color: white;
+            display: block;
+            margin: 30px auto;
+            padding: 12px 30px;
+            font-size: 16px;
+        }
+
+        .printAll:hover {
+            background: var(--primary-dark);
+        }
+
+        .backBtn {
+            background: var(--primary);
+            color: white;
+            margin: 20px;
+            padding: 10px 20px;
+        }
+
+        .backBtn:hover {
+            background: var(--primary-dark);
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #666;
+            font-size: 1.2rem;
+            margin: 50px 0;
+        }
+
+        /* Watermark */
+        .watermark {
+            position: absolute;
+            font-size: 60px;
+            font-weight: bold;
+            color: rgba(30, 58, 95, 0.1);
+            z-index: -1;
+            pointer-events: none;
+            transform: rotate(-45deg);
+        }
+
+        .watermark-1 {
+            top: 20%;
+            left: 10%;
+        }
+
+        .watermark-2 {
+            top: 50%;
+            left: 60%;
+        }
+
+        .watermark-3 {
+            top: 80%;
+            left: 20%;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .design-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-container {
+                flex-direction: column;
+            }
+        }
+
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .navbar,
+            .backBtn,
+            .printAll,
+            .actions,
+            h1 {
+                display: none !important;
+            }
+
+            .design-grid {
+                display: block !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .design-card {
+                display: block !important;
+                width: 100% !important;
+                margin: 0 auto 20mm auto !important;
+                padding: 15mm !important;
+                border: 1px solid #000 !important;
+                box-shadow: none !important;
+                background: #fff !important;
+                page-break-inside: avoid !important;
+            }
+
+            .summary-container {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                width: 100% !important;
+            }
+
+            @page {
+                margin: 15mm;
+                size: A4 portrait;
+            }
+        }
+
+        @media print {
+
+            .preview-box {
+                width: 300px !important;
+                aspect-ratio: 1/1 !important;
+            }
+
+            .design-card {
+                padding: 8mm !important;
+                margin: 0 auto 10mm auto !important;
+            }
+
+            .summary-container {
+                gap: 10px !important;
+            }
+
+            .summary-table td,
+            .summary-table th {
+                padding: 4px !important;
+                font-size: 11px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main Content -->
+    <button class="backBtn" onclick="window.location.href='test2.html'">← Back to Configurator</button>
+
+    <div class="main-container">
+        <h1>My Lumi Designs</h1>
+        <div class="design-grid" id="designGrid"></div>
+    </div>
+
+    <button id="print-btn" class="printAll">Print / Download All Designs</button>
+
+    <script>
+        const designGrid = document.getElementById('designGrid');
+        const designs = JSON.parse(localStorage.getItem('lumiDesigns') || '[]');
+
+        if (designs.length === 0) {
+            designGrid.innerHTML = '<div class="empty-message">No Lumi designs saved yet. Create your first design in the configurator!</div>';
+        } else {
+            designs.forEach(design => {
+                const card = document.createElement('div');
+                card.className = 'design-card';
+
+                // Generate text values display
+                let textValuesHTML = '';
+                if (design.textValues) {
+                    textValuesHTML = `
+                        <tr><td>Text Position 1</td><td>${design.textValues.text1 || 'Not set'}</td></tr>
+                        <tr><td>Text Position 2</td><td>${design.textValues.text2 || 'Not set'}</td></tr>
+                        <tr><td>Text Position 3</td><td>${design.textValues.text3 || 'Not set'}</td></tr>
+                        <tr><td>Text Position 4</td><td>${design.textValues.text4 || 'Not set'}</td></tr>
+                        <tr><td>Text Position 5</td><td>${design.textValues.text5 || 'Not set'}</td></tr>
+                        <tr><td>Text Position 6</td><td>${design.textValues.text6 || 'Not set'}</td></tr>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="summary-container">
+                        <div class="watermark watermark-1">L</div>
+                        <div class="watermark watermark-2">L</div>
+                        <div class="watermark watermark-3">L</div>
+
+                        <div class="summary-preview">
+                            <h4>Final Preview</h4>
+                            <div class="preview-container">
+                                <div class="preview-box" id="preview-${design.id}"></div>
+                            </div>
+                        </div>
+
+                        <div class="summary-details">
+                            <h4>Configuration Details</h4>
+                            <table class="summary-table">
+                                <tr><th>Configuration Item</th><th>Selected Option</th></tr>
+                                <tr><td>Background Color</td><td style="background-color: ${design.color}; color: white;">${design.colorName || design.color}</td></tr>
+                                <tr><td>Engraving Type</td><td>${design.engravingType.charAt(0).toUpperCase() + design.engravingType.slice(1)}</td></tr>
+                                ${textValuesHTML}
+                                <tr><td>Date & Time</td><td>${design.fileName}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="deleteBtn" onclick="deleteDesign('${design.id}')">Delete Design</button>
+                    </div>
+                `;
+
+                const previewBox = card.querySelector(`#preview-${design.id}`);
+                if (design.previewHTML) {
+                    previewBox.innerHTML = design.previewHTML;
+
+                    // Apply the actual background color to all boxes
+                    const boxes = previewBox.querySelectorAll('.box');
+                    boxes.forEach(box => {
+                        box.style.backgroundColor = design.color;
+                    });
+                }
+
+                designGrid.appendChild(card);
+
+                designGrid.appendChild(card);
+            });
+        }
+
+        function deleteDesign(id) {
+            if (confirm('Are you sure you want to delete this design?')) {
+                let allDesigns = JSON.parse(localStorage.getItem('lumiDesigns') || '[]');
+                allDesigns = allDesigns.filter(d => d.id !== id);
+                localStorage.setItem('lumiDesigns', JSON.stringify(allDesigns));
+                location.reload();
+            }
+        }
+
+        // Print functionality
+        document.getElementById('print-btn').addEventListener('click', function () {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+
+            const formattedDateTime = `${day}-${month}-${year})(${hours}-${minutes}-${ampm}`;
+            const filename = `Lumi_Designs(${formattedDateTime})`;
+
+            const originalTitle = document.title;
+            document.title = filename;
+
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    document.title = originalTitle;
+                }, 1000);
+            }, 100);
+        });
+    </script>
+    <script>
+    // Block page if not logged in
+    const isLoggedIn = sessionStorage.getItem('lumi_authenticated');
+
+    if (!isLoggedIn) {
+        window.location.href = 'login.html';
+    }
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lumi Configurator</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --square-bg: #1e293b;
+            --square-border: #e2e8f0;
+            --gap: 3px;
+            --pad: 12px;
+            --radius: 8px;
+            --shadow: 0 10px 30px rgba(2, 6, 23, 0.1);
+            --header-bg: #1e293b;
+            --footer-bg: #1e293b;
+            --text-light: #f8fafc;
+            --accent: #3b82f6;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100svh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+            color: #0b1220;
+            background-color: var(--bg);
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--header-bg);
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: var(--accent);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Main Content Styles */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .title {
+            color: #1e293b;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        /* The square container (columns only) */
+        .square {
+            width: min(92vmin, 520px);
+            aspect-ratio: 1 / 1;
+            border-radius: var(--radius);
+            border: 1px solid var(--square-border);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: 1fr;
+            gap: var(--gap);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .box {
+            border-radius: calc(var(--radius) - 8px);
+            border: 1px solid #a1a1a1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            letter-spacing: .3px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, .02), rgba(0, 0, 0, .04));
+            position: relative;
+            overflow: hidden;
+            padding: 20px 0;
+            background-color: #e1e1e1; /* Default white background */
+        }
+
+        .box-top,
+        .box-bottom {
+            width: 100%;
+            text-align: center;
+            padding: 16px 0;
+            font-weight: bold;
+            font-size: clamp(10px, 2.5vw, 14px);
+            min-height: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+            color: white;
+        }
+
+        .icon-with-text-option {
+            background-color: #98baff87;
+        }
+
+        .box-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .box span {
+            opacity: .65;
+            font-size: 14px;
+        }
+
+        .box:hover {
+            border-style: solid;
+            background: linear-gradient(180deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.1));
+        }
+
+        /* Configuration Panel */
+        .config-panel {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            width: min(92vmin, 520px);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .config-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .config-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: #1e293b;
+            transform: scale(1.1);
+        }
+
+        .engraving-options {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .engraving-option {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .engraving-option:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .engraving-option.selected {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .text-input {
+            padding: 0.5rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 0.9rem;
+            width: 100%;
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .icon-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border: 1px dashed #cbd5e1;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 80px;
+            background-color: rgb(133, 177, 248);
+        }
+
+        .icon-option:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .icon-option.selected {
+            border-color: var(--accent);
+            background-color: rgba(0, 98, 255, 1);
+        }
+
+        .icon-plus {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #64748b;
+        }
+
+        .icon-text {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            color: #ffffff;
+        }
+
+        .icon-with-text-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .icon-with-text-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border: 1px dashed #cbd5e1;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 100px;
+        }
+
+        .icon-with-text-option:hover {
+            border-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .icon-with-text-option.selected {
+            border-color: var(--accent);
+            background-color: rgba(0, 98, 255, 1);
+        }
+
+        .icon-with-text-input {
+            width: 100%;
+            padding: 0.25rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .save-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .save-btn {
+            padding: 0.75rem 2rem;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .save-btn:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--radius);
+            width: min(95vw, 800px);
+            height: min(80vh, 600px);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .close-modal:hover {
+            color: #1e293b;
+        }
+
+        .icon-grid-modal {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 0.75rem;
+            overflow-y: auto;
+            flex: 1;
+            padding: 0.5rem;
+        }
+
+        .icon-modal-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            aspect-ratio: 1 / 1;
+            background-color: #000000;
+        }
+
+        .icon-modal-option:hover {
+            border-color: var(--accent);
+            background-color: #1e293b;
+        }
+
+        .icon-modal-option.selected {
+            border-color: var(--accent);
+            background-color: #1e293b;
+        }
+
+        .icon-preview {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            margin-bottom: 0.5rem;
+        }
+
+        .icon-number {
+            font-size: 0.7rem;
+            color: #ffffff;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--text-light);
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .copyright {
+            margin-top: 1rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Loading state for icons */
+        .icon-preview.loading {
+            background-color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .engraving-options {
+                flex-direction: column;
+            }
+
+            .icon-grid-modal {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .icon-grid-modal {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <span>Hexa Tactile Configurator</span>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="window.location.href='designs.html'">View Design</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="title">Engraving Style Configurator</h1>
+
+        <div class="square">
+            <div class="box" id="box1">
+                <div class="box-top" id="box1-top"></div>
+                <div class="box-content" id="box1-content"></div>
+                <div class="box-bottom" id="box1-bottom"></div>
+            </div>
+            <div class="box" id="box2">
+                <div class="box-top" id="box2-top"></div>
+                <div class="box-content" id="box2-content"></div>
+                <div class="box-bottom" id="box2-bottom"></div>
+            </div>
+            <div class="box" id="box3">
+                <div class="box-top" id="box3-top"></div>
+                <div class="box-content" id="box3-content"></div>
+                <div class="box-bottom" id="box3-bottom"></div>
+            </div>
+        </div>
+
+        <div class="config-panel">
+            <div class="config-section">
+                <h3 class="section-title">Select Color</h3>
+                <div class="color-options">
+                    <div class="color-option selected" style="background-color: #e1e1e1;" data-color="#e1e1e1" data-name="White"></div>
+                    <div class="color-option" style="background-color: #2f2524;" data-color="#2f2524" data-name="Red Copper"></div>
+                    <div class="color-option" style="background-color: #a39d87;" data-color="#a39d87" data-name="Amber"></div>
+                    <div class="color-option" style="background-color: #262626;" data-color="#262626" data-name="Black"></div>
+                    <div class="color-option" style="background-color: #3e3b28;" data-color="#3e3b28" data-name="Bronze"></div>
+                    <div class="color-option" style="background-color: #5e5e5e;" data-color="#5e5e5e" data-name="Grey"></div>
+                    <div class="color-option" style="background-color: #d2c6ac;" data-color="#d2c6ac" data-name="Champagne"></div>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h3 class="section-title">Select Engraving Type</h3>
+                <div class="engraving-options">
+                    <div class="engraving-option selected" data-type="normal">Normal</div>
+                    <div class="engraving-option" data-type="text">Text</div>
+                    <div class="engraving-option" data-type="icon">Icon</div>
+                    <div class="engraving-option" data-type="textWithIcon">Text With Icon</div>
+                </div>
+
+                <!-- Normal Engraving (hidden by default) -->
+                <div id="normal-options" class="engraving-type-options">
+                    <p>Normal engraving selected. Dashes will appear on top and bottom of each box.</p>
+                </div>
+
+                <!-- Text Engraving (hidden by default) -->
+                <div id="text-options" class="engraving-type-options" style="display: none;">
+                    <p>Enter text for each position (max 7 characters):</p>
+                    <div class="input-grid">
+                        <input type="text" class="text-input" placeholder="Text 1" data-position="1" maxlength="7">
+                        <input type="text" class="text-input" placeholder="Text 2" data-position="2" maxlength="7">
+                        <input type="text" class="text-input" placeholder="Text 3" data-position="3" maxlength="7">
+                        <input type="text" class="text-input" placeholder="Text 4" data-position="4" maxlength="7">
+                        <input type="text" class="text-input" placeholder="Text 5" data-position="5" maxlength="7">
+                        <input type="text" class="text-input" placeholder="Text 6" data-position="6" maxlength="7">
+                    </div>
+                </div>
+
+                <!-- Icon Engraving (hidden by default) -->
+                <div id="icon-options" class="engraving-type-options" style="display: none;">
+                    <p>Select icons for each position:</p>
+                    <div class="icon-grid">
+                        <div class="icon-option" data-position="1">
+                            <div class="icon-plus">+</div>
+                            <div class="icon-text">Icon 1</div>
+                        </div>
+                        <div class="icon-option" data-position="2">
+                            <div class="icon-plus">+</div>
+                            <div class="icon-text">Icon 2</div>
+                        </div>
+                        <div class="icon-option" data-position="3">
+                            <div class="icon-plus">+</div>
+                            <div class="icon-text">Icon 3</div>
+                        </div>
+                        <div class="icon-option" data-position="4">
+                            <div class="icon-plus">+</div>
+                            <div class="icon-text">Icon 4</div>
+                        </div>
+                        <div class="icon-option" data-position="5">
+                            <div class="icon-plus">+</div>
+                            <div class="icon-text">Icon 5</div>
+                        </div>
+                        <div class="icon-option" data-position="6">
+                            <div class="icon-plus">+</div>
+                            <div class="icon-text">Icon 6</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text With Icon Engraving (hidden by default) -->
+                <div id="textWithIcon-options" class="engraving-type-options" style="display: none;">
+                    <p>Select icons and enter text for each position (max 7 characters):</p>
+                    <div class="icon-with-text-grid">
+                        <div class="icon-with-text-option" data-position="1">
+                            <div class="icon-plus">+</div>
+                            <input type="text" class="icon-with-text-input" placeholder="Text 1" maxlength="7">
+                        </div>
+                        <div class="icon-with-text-option" data-position="2">
+                            <div class="icon-plus">+</div>
+                            <input type="text" class="icon-with-text-input" placeholder="Text 2" maxlength="7">
+                        </div>
+                        <div class="icon-with-text-option" data-position="3">
+                            <div class="icon-plus">+</div>
+                            <input type="text" class="icon-with-text-input" placeholder="Text 3" maxlength="7">
+                        </div>
+                        <div class="icon-with-text-option" data-position="4">
+                            <div class="icon-plus">+</div>
+                            <input type="text" class="icon-with-text-input" placeholder="Text 4" maxlength="7">
+                        </div>
+                        <div class="icon-with-text-option" data-position="5">
+                            <div class="icon-plus">+</div>
+                            <input type="text" class="icon-with-text-input" placeholder="Text 5" maxlength="7">
+                        </div>
+                        <div class="icon-with-text-option" data-position="6">
+                            <div class="icon-plus">+</div>
+                            <input type="text" class="icon-with-text-input" placeholder="Text 6" maxlength="7">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="save-btn-container">
+                <button class="save-btn" id="save-config">Save Configuration</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Icon Selection Modal -->
+    <div class="modal" id="iconModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Select an Icon</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="icon-grid-modal" id="iconGridModal">
+                <!-- Icons will be dynamically generated here -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="logo">
+                <div class="logo-icon">L</div>
+                <span>Lumi Configurator</span>
+            </div>
+            <div class="copyright">
+                &copy; 2023 Lumi Configurator. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Current selected position for icon modal
+        let currentIconPosition = null;
+        let currentIconType = null; // 'icon' or 'textWithIcon'
+
+        // Color selection
+        const colorOptions = document.querySelectorAll('.color-option');
+        const boxes = document.querySelectorAll('.box');
+
+        colorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove selected class from all options
+                colorOptions.forEach(opt => opt.classList.remove('selected'));
+                // Add selected class to clicked option
+                option.classList.add('selected');
+
+                // Get the selected color
+                const selectedColor = option.getAttribute('data-color');
+
+                // Update box backgrounds
+                boxes.forEach(box => {
+                    box.style.backgroundColor = selectedColor;
+                });
+            });
+        });
+
+        // Engraving type selection
+        const engravingOptions = document.querySelectorAll('.engraving-option');
+        const engravingTypeOptions = document.querySelectorAll('.engraving-type-options');
+
+        engravingOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove selected class from all options
+                engravingOptions.forEach(opt => opt.classList.remove('selected'));
+                // Add selected class to clicked option
+                option.classList.add('selected');
+
+                // Get the selected type
+                const selectedType = option.getAttribute('data-type');
+
+                // Hide all options
+                engravingTypeOptions.forEach(opt => {
+                    opt.style.display = 'none';
+                });
+
+                // Show selected options
+                document.getElementById(`${selectedType}-options`).style.display = 'block';
+
+                // Update preview based on selected type
+                updatePreview(selectedType);
+            });
+        });
+
+        // Text input handling
+        const textInputs = document.querySelectorAll('.text-input');
+        textInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                // Enforce character limit
+                if (input.value.length > 7) {
+                    input.value = input.value.substring(0, 7);
+                }
+                updateTextPreview();
+            });
+        });
+
+        // Icon selection handling
+        const iconOptions = document.querySelectorAll('.icon-option');
+        iconOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                currentIconPosition = option.getAttribute('data-position');
+                currentIconType = 'icon';
+                openIconModal();
+            });
+        });
+
+        // Icon with text input handling
+        const iconWithTextInputs = document.querySelectorAll('.icon-with-text-input');
+        iconWithTextInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                // Enforce character limit
+                if (input.value.length > 7) {
+                    input.value = input.value.substring(0, 7);
+                }
+                updateIconWithTextPreview();
+            });
+        });
+
+        // Icon with text option click handling
+        const iconWithTextOptions = document.querySelectorAll('.icon-with-text-option');
+        iconWithTextOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                // Only open modal if the plus icon was clicked, not the input
+                if (e.target.classList.contains('icon-plus') || e.target.classList.contains('icon-with-text-option')) {
+                    currentIconPosition = option.getAttribute('data-position');
+                    currentIconType = 'textWithIcon';
+                    openIconModal();
+                }
+            });
+        });
+
+        // Save configuration button
+        const saveBtn = document.getElementById('save-config');
+        saveBtn.addEventListener('click', () => {
+            // Get current configuration
+            const selectedColor = document.querySelector('.color-option.selected').getAttribute('data-color');
+            const selectedColorName = document.querySelector('.color-option.selected').getAttribute('data-name');
+            const selectedEngravingType = document.querySelector('.engraving-option.selected').getAttribute('data-type');
+
+            // Get the preview HTML
+            const square = document.querySelector('.square');
+            const previewHTML = square.innerHTML;
+
+            // Get text values for all 6 positions
+            const textValues = getTextValues();
+
+            // Create design object
+            const design = {
+                id: Date.now().toString(),
+                color: selectedColor,
+                colorName: selectedColorName,
+                engravingType: selectedEngravingType,
+                previewHTML: previewHTML,
+                fileName: new Date().toLocaleString(),
+                timestamp: new Date().toISOString(),
+                textValues: textValues
+            };
+
+            // Get existing designs from localStorage
+            let designs = JSON.parse(localStorage.getItem('lumiDesigns') || '[]');
+
+            // Add new design
+            designs.push(design);
+
+            // Save back to localStorage
+            localStorage.setItem('lumiDesigns', JSON.stringify(designs));
+
+            alert('Design saved successfully!');
+
+            // Optionally redirect to designs page
+            // window.location.href = 'designs.html';
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('iconModal');
+        const closeModal = document.querySelector('.close-modal');
+        const iconGridModal = document.getElementById('iconGridModal');
+
+        // Generate 87 icon options in the modal
+        function generateIcons() {
+            for (let i = 1; i <= 87; i++) {
+                const iconOption = document.createElement('div');
+                iconOption.className = 'icon-modal-option';
+                iconOption.setAttribute('data-icon', i);
+
+                // Create image element for the icon
+                const iconImg = document.createElement('img');
+                iconImg.className = 'icon-preview';
+                iconImg.alt = `Icon ${i}`;
+
+                // Use local icon paths
+                iconImg.src = `./icons/${i}.png`;
+
+                // Add loading state
+                iconImg.onload = () => {
+                    iconImg.classList.remove('loading');
+                };
+
+                iconImg.onerror = () => {
+                    // If icon fails to load, show a placeholder
+                    iconImg.src = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjM0I4MkY2Ii8+Cjx0ZXh0IHg9IjI0IiB5PSIyOCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+${i}</dGV4dD4KPC9zdmc+`;
+                };
+
+                const iconNumber = document.createElement('div');
+                iconNumber.className = 'icon-number';
+                iconNumber.textContent = `Icon ${i}`;
+
+                iconOption.appendChild(iconImg);
+                iconOption.appendChild(iconNumber);
+
+                iconOption.addEventListener('click', () => {
+                    selectIcon(i);
+                });
+
+                iconGridModal.appendChild(iconOption);
+            }
+        }
+
+        // Initialize icons
+        generateIcons();
+
+        // Open modal function
+        function openIconModal() {
+            modal.style.display = 'flex';
+        }
+
+        // Close modal function
+        function closeModalFunc() {
+            modal.style.display = 'none';
+        }
+
+        // Close modal when clicking the X or outside the modal
+        closeModal.addEventListener('click', closeModalFunc);
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModalFunc();
+            }
+        });
+
+        // Select icon function
+        function selectIcon(iconNumber) {
+            if (currentIconPosition && currentIconType) {
+                if (currentIconType === 'icon') {
+                    // Update the icon option display
+                    const iconOption = document.querySelector(`.icon-option[data-position="${currentIconPosition}"]`);
+                    const iconPlus = iconOption.querySelector('.icon-plus');
+
+                    // Replace the plus with the selected icon
+                    iconPlus.style.display = 'none';
+
+                    // Create or update the icon image
+                    let iconImg = iconOption.querySelector('.icon-preview');
+                    if (!iconImg) {
+                        iconImg = document.createElement('img');
+                        iconImg.className = 'icon-preview';
+                        iconOption.insertBefore(iconImg, iconOption.querySelector('.icon-text'));
+                    }
+
+                    // Set the actual icon image source
+                    iconImg.src = `./icons/${iconNumber}.png`;
+                    iconImg.alt = `Icon ${iconNumber}`;
+                    iconImg.style.width = '32px'; // Larger preview size
+                    iconImg.style.height = '32px'; // Larger preview size
+
+                    // Mark as selected
+                    iconOption.classList.add('selected');
+
+                    // Update preview
+                    updateIconPreview();
+                } else if (currentIconType === 'textWithIcon') {
+                    // Update the icon with text option display
+                    const iconOption = document.querySelector(`.icon-with-text-option[data-position="${currentIconPosition}"]`);
+                    const iconPlus = iconOption.querySelector('.icon-plus');
+
+                    // Replace the plus with the selected icon
+                    iconPlus.style.display = 'none';
+
+                    // Create or update the icon image
+                    let iconImg = iconOption.querySelector('.icon-preview');
+                    if (!iconImg) {
+                        iconImg = document.createElement('img');
+                        iconImg.className = 'icon-preview';
+                        iconOption.insertBefore(iconImg, iconOption.querySelector('.icon-with-text-input'));
+                    }
+
+                    // Set the actual icon image source
+                    iconImg.src = `./icons/${iconNumber}.png`;
+                    iconImg.alt = `Icon ${iconNumber}`;
+                    iconImg.style.width = '32px'; // Larger preview size
+                    iconImg.style.height = '32px'; // Larger preview size
+
+                    // Mark as selected
+                    iconOption.classList.add('selected');
+
+                    // Update preview
+                    updateIconWithTextPreview();
+                }
+            }
+
+            closeModalFunc();
+        }
+
+        // Function to update preview based on engraving type
+        function updatePreview(type) {
+            // Reset all boxes
+            boxes.forEach(box => {
+                const top = box.querySelector('.box-top');
+                const content = box.querySelector('.box-content');
+                const bottom = box.querySelector('.box-bottom');
+
+                top.innerHTML = '';
+                content.innerHTML = '';
+                bottom.innerHTML = '';
+
+                // Apply normal engraving (dashes) by default
+                if (type === 'normal') {
+                    top.innerHTML = '—';
+                    bottom.innerHTML = '—';
+                }
+            });
+
+            // Update based on specific type
+            if (type === 'text') {
+                updateTextPreview();
+            } else if (type === 'icon') {
+                updateIconPreview();
+            } else if (type === 'textWithIcon') {
+                updateIconWithTextPreview();
+            }
+        }
+
+        // Function to update text preview
+        function updateTextPreview() {
+            const textInputs = document.querySelectorAll('.text-input');
+            const boxes = document.querySelectorAll('.box');
+
+            boxes.forEach((box, index) => {
+                const top = box.querySelector('.box-top');
+                const content = box.querySelector('.box-content');
+                const bottom = box.querySelector('.box-bottom');
+
+                // For text engraving, show text at top and bottom
+                if (index === 0) {
+                    top.textContent = textInputs[0].value || 'Text 1';
+                    bottom.textContent = textInputs[3].value || 'Text 4';
+                } else if (index === 1) {
+                    top.textContent = textInputs[1].value || 'Text 2';
+                    bottom.textContent = textInputs[4].value || 'Text 5';
+                } else if (index === 2) {
+                    top.textContent = textInputs[2].value || 'Text 3';
+                    bottom.textContent = textInputs[5].value || 'Text 6';
+                }
+            });
+        }
+
+        // Function to update icon preview
+        function updateIconPreview() {
+            const iconOptions = document.querySelectorAll('.icon-option');
+            const boxes = document.querySelectorAll('.box');
+
+            boxes.forEach((box, index) => {
+                const top = box.querySelector('.box-top');
+                const content = box.querySelector('.box-content');
+                const bottom = box.querySelector('.box-bottom');
+
+                // For icon engraving, show icons at top and bottom
+                if (index === 0) {
+                    const icon1 = iconOptions[0].querySelector('.icon-preview');
+                    const icon4 = iconOptions[3].querySelector('.icon-preview');
+
+                    top.innerHTML = icon1 ? `<img src="${icon1.src}" alt="Icon" style="width: 40px; height: 40px;">` : '';
+                    bottom.innerHTML = icon4 ? `<img src="${icon4.src}" alt="Icon" style="width: 40px; height: 40px;">` : '';
+                } else if (index === 1) {
+                    const icon2 = iconOptions[1].querySelector('.icon-preview');
+                    const icon5 = iconOptions[4].querySelector('.icon-preview');
+
+                    top.innerHTML = icon2 ? `<img src="${icon2.src}" alt="Icon" style="width: 40px; height: 40px;">` : '';
+                    bottom.innerHTML = icon5 ? `<img src="${icon5.src}" alt="Icon" style="width: 40px; height: 40px;">` : '';
+                } else if (index === 2) {
+                    const icon3 = iconOptions[2].querySelector('.icon-preview');
+                    const icon6 = iconOptions[5].querySelector('.icon-preview');
+
+                    top.innerHTML = icon3 ? `<img src="${icon3.src}" alt="Icon" style="width: 40px; height: 40px;">` : '';
+                    bottom.innerHTML = icon6 ? `<img src="${icon6.src}" alt="Icon" style="width: 40px; height: 40px;">` : '';
+                }
+            });
+        }
+
+        // Function to update icon with text preview
+        function updateIconWithTextPreview() {
+            const iconWithTextOptions = document.querySelectorAll('.icon-with-text-option');
+            const boxes = document.querySelectorAll('.box');
+
+            boxes.forEach((box, index) => {
+                const top = box.querySelector('.box-top');
+                const content = box.querySelector('.box-content');
+                const bottom = box.querySelector('.box-bottom');
+
+                // For icon with text engraving, show icons and text at top and bottom
+                if (index === 0) {
+                    const input1 = iconWithTextOptions[0].querySelector('.icon-with-text-input');
+                    const input4 = iconWithTextOptions[3].querySelector('.icon-with-text-input');
+                    const icon1 = iconWithTextOptions[0].querySelector('.icon-preview');
+                    const icon4 = iconWithTextOptions[3].querySelector('.icon-preview');
+
+                    top.innerHTML = (icon1 ? `<div><img src="${icon1.src}" alt="Icon" style="width: 35px; height: 35px;"></div>` : '') +
+                        `<div>${input1.value || 'Text 1'}</div>`;
+                    bottom.innerHTML = (icon4 ? `<div><img src="${icon4.src}" alt="Icon" style="width: 35px; height: 35px;"></div>` : '') +
+                        `<div>${input4.value || 'Text 4'}</div>`;
+                } else if (index === 1) {
+                    const input2 = iconWithTextOptions[1].querySelector('.icon-with-text-input');
+                    const input5 = iconWithTextOptions[4].querySelector('.icon-with-text-input');
+                    const icon2 = iconWithTextOptions[1].querySelector('.icon-preview');
+                    const icon5 = iconWithTextOptions[4].querySelector('.icon-preview');
+
+                    top.innerHTML = (icon2 ? `<div><img src="${icon2.src}" alt="Icon" style="width: 35px; height: 35px;"></div>` : '') +
+                        `<div>${input2.value || 'Text 2'}</div>`;
+                    bottom.innerHTML = (icon5 ? `<div><img src="${icon5.src}" alt="Icon" style="width: 35px; height: 35px;"></div>` : '') +
+                        `<div>${input5.value || 'Text 5'}</div>`;
+                } else if (index === 2) {
+                    const input3 = iconWithTextOptions[2].querySelector('.icon-with-text-input');
+                    const input6 = iconWithTextOptions[5].querySelector('.icon-with-text-input');
+                    const icon3 = iconWithTextOptions[2].querySelector('.icon-preview');
+                    const icon6 = iconWithTextOptions[5].querySelector('.icon-preview');
+
+                    top.innerHTML = (icon3 ? `<div><img src="${icon3.src}" alt="Icon" style="width: 35px; height: 35px;"></div>` : '') +
+                        `<div>${input3.value || 'Text 3'}</div>`;
+                    bottom.innerHTML = (icon6 ? `<div><img src="${icon6.src}" alt="Icon" style="width: 35px; height: 35px;"></div>` : '') +
+                        `<div>${input6.value || 'Text 6'}</div>`;
+                }
+            });
+        }
+
+        // Function to get all text values
+        function getTextValues() {
+            const textValues = {
+                text1: '',
+                text2: '',
+                text3: '',
+                text4: '',
+                text5: '',
+                text6: ''
+            };
+
+            // Get values from text inputs
+            const textInputs = document.querySelectorAll('.text-input');
+            if (textInputs.length > 0) {
+                textValues.text1 = textInputs[0].value || '';
+                textValues.text2 = textInputs[1].value || '';
+                textValues.text3 = textInputs[2].value || '';
+                textValues.text4 = textInputs[3].value || '';
+                textValues.text5 = textInputs[4].value || '';
+                textValues.text6 = textInputs[5].value || '';
+            }
+
+            // Get values from icon with text inputs
+            const iconWithTextInputs = document.querySelectorAll('.icon-with-text-input');
+            if (iconWithTextInputs.length > 0) {
+                textValues.text1 = iconWithTextInputs[0].value || '';
+                textValues.text2 = iconWithTextInputs[1].value || '';
+                textValues.text3 = iconWithTextInputs[2].value || '';
+                textValues.text4 = iconWithTextInputs[3].value || '';
+                textValues.text5 = iconWithTextInputs[4].value || '';
+                textValues.text6 = iconWithTextInputs[5].value || '';
+            }
+
+            return textValues;
+        }
+
+        // Initialize with normal engraving
+        updatePreview('normal');
+    </script>
+    <script>
+    // Block page if not logged in
+    const isLoggedIn = sessionStorage.getItem('lumi_authenticated');
+
+    if (!isLoggedIn) {
+        window.location.href = 'login.html';
+    }
+</script>
+
+</body>
+
+</html>
