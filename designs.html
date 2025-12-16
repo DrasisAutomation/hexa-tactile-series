@@ -194,7 +194,7 @@
             background: linear-gradient(180deg, rgba(0, 0, 0, .02), rgba(0, 0, 0, .04));
             position: relative;
             overflow: hidden;
-            padding: 20px 0;
+            padding: 0px 0;
         }
 
         .box-top,
@@ -404,6 +404,21 @@
                 font-size: 11px !important;
             }
         }
+
+        .editBtn {
+            background: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .editBtn:hover {
+            background: #2563eb;
+        }
     </style>
 </head>
 
@@ -434,44 +449,52 @@
                 let textValuesHTML = '';
                 if (design.textValues) {
                     textValuesHTML = `
-                        <tr><td>Text Position 1</td><td>${design.textValues.text1 || 'Not set'}</td></tr>
-                        <tr><td>Text Position 2</td><td>${design.textValues.text2 || 'Not set'}</td></tr>
-                        <tr><td>Text Position 3</td><td>${design.textValues.text3 || 'Not set'}</td></tr>
-                        <tr><td>Text Position 4</td><td>${design.textValues.text4 || 'Not set'}</td></tr>
-                        <tr><td>Text Position 5</td><td>${design.textValues.text5 || 'Not set'}</td></tr>
-                        <tr><td>Text Position 6</td><td>${design.textValues.text6 || 'Not set'}</td></tr>
-                    `;
+        <tr><td>Text Position 1</td><td>${design.textValues.text1 || 'Not set'}</td></tr>
+        <tr><td>Text Position 2</td><td>${design.textValues.text2 || 'Not set'}</td></tr>
+        <tr><td>Text Position 3</td><td>${design.textValues.text3 || 'Not set'}</td></tr>
+        <tr><td>Text Position 4</td><td>${design.textValues.text4 || 'Not set'}</td></tr>
+        <tr><td>Text Position 5</td><td>${design.textValues.text5 || 'Not set'}</td></tr>
+        <tr><td>Text Position 6</td><td>${design.textValues.text6 || 'Not set'}</td></tr>
+    `;
+                }
+
+                // Add switch label row if it exists
+                let switchLabelRow = '';
+                if (design.switchLabel) {
+                    switchLabelRow = `<tr><td>Switch Label</td><td><strong>${design.switchLabel}</strong></td></tr>`;
                 }
 
                 card.innerHTML = `
-                    <div class="summary-container">
-                        <div class="watermark watermark-1">L</div>
-                        <div class="watermark watermark-2">L</div>
-                        <div class="watermark watermark-3">L</div>
+    <div class="summary-container">
+        <div class="watermark watermark-1">L</div>
+        <div class="watermark watermark-2">L</div>
+        <div class="watermark watermark-3">L</div>
 
-                        <div class="summary-preview">
-                            <h4>Final Preview</h4>
-                            <div class="preview-container">
-                                <div class="preview-box" id="preview-${design.id}"></div>
-                            </div>
-                        </div>
+        <div class="summary-preview">
+            <h4>${design.switchLabel}</h4>
+            <div class="preview-container">
+                <div class="preview-box" id="preview-${design.id}"></div>
+            </div>
+        </div>
 
-                        <div class="summary-details">
-                            <h4>Configuration Details</h4>
-                            <table class="summary-table">
-                                <tr><th>Configuration Item</th><th>Selected Option</th></tr>
-                                <tr><td>Background Color</td><td style="background-color: ${design.color}; color: white;">${design.colorName || design.color}</td></tr>
-                                <tr><td>Engraving Type</td><td>${design.engravingType.charAt(0).toUpperCase() + design.engravingType.slice(1)}</td></tr>
-                                ${textValuesHTML}
-                                <tr><td>Date & Time</td><td>${design.fileName}</td></tr>
-                            </table>
-                        </div>
-                    </div>
+        <div class="summary-details">
+            <h4>Configuration Details</h4>
+            <table class="summary-table">
+                <tr><th>Configuration Item</th><th>Selected Option</th></tr>
+                <tr><td>Background Color</td><td style="background-color: ${design.color}; color: white;">${design.colorName || design.color}</td></tr>
+                <tr><td>Engraving Type</td><td>${design.engravingType.charAt(0).toUpperCase() + design.engravingType.slice(1)}</td></tr>
+                ${switchLabelRow}
+                ${textValuesHTML}
+                <tr><td>Date & Time</td><td>${design.fileName}</td></tr>
+            </table>
+        </div>
+    </div>
 
-                    <div class="actions">
-                        <button class="deleteBtn" onclick="deleteDesign('${design.id}')">Delete Design</button>
-                    </div>
-                `;
+    <div class="actions">
+        <button class="editBtn" onclick="editDesign('${design.id}')">Edit Design</button>
+        <button class="deleteBtn" onclick="deleteDesign('${design.id}')">Delete Design</button>
+    </div>
+`;
 
                 const previewBox = card.querySelector(`#preview-${design.id}`);
                 if (design.previewHTML) {
@@ -498,7 +521,28 @@
                 location.reload();
             }
         }
+        function editDesign(id) {
+            // Get all designs from localStorage
+            let allDesigns = JSON.parse(localStorage.getItem('lumiDesigns') || '[]');
 
+            // Find the design to edit
+            const designToEdit = allDesigns.find(d => d.id === id);
+
+            if (!designToEdit) {
+                alert('Design not found!');
+                return;
+            }
+
+            // Store the design data and edit mode flag in sessionStorage
+            sessionStorage.setItem('editDesignData', JSON.stringify(designToEdit));
+            sessionStorage.setItem('isEditing', 'true');
+            sessionStorage.setItem('editDesignId', id);
+
+            console.log('Edit mode activated for:', designToEdit);
+
+            // Redirect to index.html with edit mode
+            window.location.href = 'index.html';
+        }
         // Print functionality
         document.getElementById('print-btn').addEventListener('click', function () {
             const now = new Date();
@@ -527,13 +571,13 @@
         });
     </script>
     <script>
-    // Block page if not logged in
-    const isLoggedIn = sessionStorage.getItem('lumi_authenticated');
+        // Block page if not logged in
+        const isLoggedIn = sessionStorage.getItem('lumi_authenticated');
 
-    if (!isLoggedIn) {
-        window.location.href = 'login.html';
-    }
-</script>
+        if (!isLoggedIn) {
+            window.location.href = 'login.html';
+        }
+    </script>
 
 </body>
 

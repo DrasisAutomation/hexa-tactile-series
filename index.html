@@ -143,7 +143,8 @@
             position: relative;
             overflow: hidden;
             padding: 20px 0;
-            background-color: #e1e1e1; /* Default white background */
+            background-color: #e1e1e1;
+            /* Default white background */
         }
 
         .box-top,
@@ -544,6 +545,15 @@
                 grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
             }
         }
+        /* Switch Label Modal Styles */
+#switchLabelModal .modal-content {
+    max-height: 400px;
+    overflow: visible;
+}
+
+.modal-body {
+    padding: 20px;
+}
     </style>
 </head>
 
@@ -584,13 +594,20 @@
             <div class="config-section">
                 <h3 class="section-title">Select Color</h3>
                 <div class="color-options">
-                    <div class="color-option selected" style="background-color: #e1e1e1;" data-color="#e1e1e1" data-name="White"></div>
-                    <div class="color-option" style="background-color: #2f2524;" data-color="#2f2524" data-name="Red Copper"></div>
-                    <div class="color-option" style="background-color: #a39d87;" data-color="#a39d87" data-name="Amber"></div>
-                    <div class="color-option" style="background-color: #262626;" data-color="#262626" data-name="Black"></div>
-                    <div class="color-option" style="background-color: #3e3b28;" data-color="#3e3b28" data-name="Bronze"></div>
-                    <div class="color-option" style="background-color: #5e5e5e;" data-color="#5e5e5e" data-name="Grey"></div>
-                    <div class="color-option" style="background-color: #d2c6ac;" data-color="#d2c6ac" data-name="Champagne"></div>
+                    <div class="color-option selected" style="background-color: #e1e1e1;" data-color="#e1e1e1"
+                        data-name="White"></div>
+                    <div class="color-option" style="background-color: #2f2524;" data-color="#2f2524"
+                        data-name="Red Copper"></div>
+                    <div class="color-option" style="background-color: #a39d87;" data-color="#a39d87" data-name="Amber">
+                    </div>
+                    <div class="color-option" style="background-color: #262626;" data-color="#262626" data-name="Black">
+                    </div>
+                    <div class="color-option" style="background-color: #3e3b28;" data-color="#3e3b28"
+                        data-name="Bronze"></div>
+                    <div class="color-option" style="background-color: #5e5e5e;" data-color="#5e5e5e" data-name="Grey">
+                    </div>
+                    <div class="color-option" style="background-color: #d2c6ac;" data-color="#d2c6ac"
+                        data-name="Champagne"></div>
                 </div>
             </div>
 
@@ -702,7 +719,12 @@
             </div>
         </div>
     </div>
-
+    <div class="cancel-btn-container" style="margin-top: 1rem; display: none;" id="cancelEditContainer">
+        <button class="cancel-edit-btn" id="cancelEditBtn"
+            style="background-color: #6b7280; color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer;">
+            Cancel Edit
+        </button>
+    </div>
     <footer>
         <div class="footer-content">
             <div class="logo">
@@ -714,7 +736,47 @@
             </div>
         </div>
     </footer>
-
+<!-- Switch Label Modal -->
+<div class="modal" id="switchLabelModal">
+    <div class="modal-content" style="max-width: 500px; height: auto;">
+        <div class="modal-header">
+            <h2 class="modal-title">Save Design</h2>
+            <button class="close-modal" onclick="closeSwitchLabelModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="padding: 20px;">
+            <div style="margin-bottom: 20px;">
+                <label for="switchLabelInput" style="display: block; margin-bottom: 8px; font-weight: 500;">
+                    Enter a name/label for this switch design:
+                </label>
+                <input 
+                    type="text" 
+                    id="switchLabelInput" 
+                    placeholder="e.g., Living Room Switch, Office Switch, etc."
+                    maxlength="30"
+                    style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;"
+                >
+                <div style="text-align: right; margin-top: 4px; color: #64748b; font-size: 12px;">
+                    <span id="charCount">0</span>/30 characters
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
+                <button 
+                    onclick="closeSwitchLabelModal()" 
+                    style="padding: 10px 20px; background: #e2e8f0; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;"
+                >
+                    Cancel
+                </button>
+                <button 
+                    onclick="confirmSaveDesign()" 
+                    style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;"
+                >
+                    Save Design
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
     <script>
         // Current selected position for icon modal
         let currentIconPosition = null;
@@ -1039,39 +1101,48 @@
             });
         }
 
-        // Function to update icon preview
-        function updateIconPreview() {
-            const iconOptions = document.querySelectorAll('.icon-option');
-            const boxes = document.querySelectorAll('.box');
+// Function to update icon preview (modify if needed)
+function updateIconPreview() {
+    const iconOptions = document.querySelectorAll('.icon-option');
+    const boxes = document.querySelectorAll('.box');
 
-            boxes.forEach((box, index) => {
-                const top = box.querySelector('.box-top');
-                const content = box.querySelector('.box-content');
-                const bottom = box.querySelector('.box-bottom');
+    boxes.forEach((box, index) => {
+        const top = box.querySelector('.box-top');
+        const content = box.querySelector('.box-content');
+        const bottom = box.querySelector('.box-bottom');
 
-                // For icon engraving, show icons at top and bottom
-                if (index === 0) {
-                    const icon1 = iconOptions[0].querySelector('.icon-preview');
-                    const icon4 = iconOptions[3].querySelector('.icon-preview');
-
-                    top.innerHTML = icon1 ? `<img src="${icon1.src}" alt="Icon" style="width: 40px; height: 40px;">` : '';
-                    bottom.innerHTML = icon4 ? `<img src="${icon4.src}" alt="Icon" style="width: 40px; height: 40px;">` : '';
-                } else if (index === 1) {
-                    const icon2 = iconOptions[1].querySelector('.icon-preview');
-                    const icon5 = iconOptions[4].querySelector('.icon-preview');
-
-                    top.innerHTML = icon2 ? `<img src="${icon2.src}" alt="Icon" style="width: 40px; height: 40px;">` : '';
-                    bottom.innerHTML = icon5 ? `<img src="${icon5.src}" alt="Icon" style="width: 40px; height: 40px;">` : '';
-                } else if (index === 2) {
-                    const icon3 = iconOptions[2].querySelector('.icon-preview');
-                    const icon6 = iconOptions[5].querySelector('.icon-preview');
-
-                    top.innerHTML = icon3 ? `<img src="${icon3.src}" alt="Icon" style="width: 40px; height: 40px;">` : '';
-                    bottom.innerHTML = icon6 ? `<img src="${icon6.src}" alt="Icon" style="width: 40px; height: 40px;">` : '';
-                }
-            });
+        // For icon engraving, show icons at top and bottom
+        if (index === 0) {
+            const iconOption1 = iconOptions[0];
+            const iconOption4 = iconOptions[3];
+            
+            const iconNumber1 = getIconNumberFromElement(iconOption1);
+            const iconNumber4 = getIconNumberFromElement(iconOption4);
+            
+            top.innerHTML = iconNumber1 ? `<img src="./icons/${iconNumber1}.png" alt="Icon" style="width: 40px; height: 40px;">` : '';
+            bottom.innerHTML = iconNumber4 ? `<img src="./icons/${iconNumber4}.png" alt="Icon" style="width: 40px; height: 40px;">` : '';
+        } else if (index === 1) {
+            const iconOption2 = iconOptions[1];
+            const iconOption5 = iconOptions[4];
+            
+            const iconNumber2 = getIconNumberFromElement(iconOption2);
+            const iconNumber5 = getIconNumberFromElement(iconOption5);
+            
+            top.innerHTML = iconNumber2 ? `<img src="./icons/${iconNumber2}.png" alt="Icon" style="width: 40px; height: 40px;">` : '';
+            bottom.innerHTML = iconNumber5 ? `<img src="./icons/${iconNumber5}.png" alt="Icon" style="width: 40px; height: 40px;">` : '';
+        } else if (index === 2) {
+            const iconOption3 = iconOptions[2];
+            const iconOption6 = iconOptions[5];
+            
+            const iconNumber3 = getIconNumberFromElement(iconOption3);
+            const iconNumber6 = getIconNumberFromElement(iconOption6);
+            
+            top.innerHTML = iconNumber3 ? `<img src="./icons/${iconNumber3}.png" alt="Icon" style="width: 40px; height: 40px;">` : '';
+            bottom.innerHTML = iconNumber6 ? `<img src="./icons/${iconNumber6}.png" alt="Icon" style="width: 40px; height: 40px;">` : '';
         }
-
+    });
+}
+        // Function to update icon with text preview
         // Function to update icon with text preview
         function updateIconWithTextPreview() {
             const iconWithTextOptions = document.querySelectorAll('.icon-with-text-option');
@@ -1082,41 +1153,49 @@
                 const content = box.querySelector('.box-content');
                 const bottom = box.querySelector('.box-bottom');
 
-                // For icon with text engraving, show icons and text at top and bottom
+                // For icon with text engraving
                 if (index === 0) {
                     const input1 = iconWithTextOptions[0].querySelector('.icon-with-text-input');
                     const input4 = iconWithTextOptions[3].querySelector('.icon-with-text-input');
                     const icon1 = iconWithTextOptions[0].querySelector('.icon-preview');
                     const icon4 = iconWithTextOptions[3].querySelector('.icon-preview');
 
+                    // Position 1: Icon above, text below (default)
                     top.innerHTML = (icon1 ? `<div><img src="${icon1.src}" alt="Icon" style="width: 35px; height: 35px;"></div>` : '') +
                         `<div>${input1.value || 'Text 1'}</div>`;
-                    bottom.innerHTML = (icon4 ? `<div><img src="${icon4.src}" alt="Icon" style="width: 35px; height: 35px;"></div>` : '') +
-                        `<div>${input4.value || 'Text 4'}</div>`;
+
+                    // Position 4: Text above, icon below
+                    bottom.innerHTML = `<div>${input4.value || 'Text 4'}</div>` +
+                        (icon4 ? `<div><img src="${icon4.src}" alt="Icon" style="width: 35px; height: 35px; margin-top: 5px;"></div>` : '');
                 } else if (index === 1) {
                     const input2 = iconWithTextOptions[1].querySelector('.icon-with-text-input');
                     const input5 = iconWithTextOptions[4].querySelector('.icon-with-text-input');
                     const icon2 = iconWithTextOptions[1].querySelector('.icon-preview');
                     const icon5 = iconWithTextOptions[4].querySelector('.icon-preview');
 
+                    // Position 2: Icon above, text below (default)
                     top.innerHTML = (icon2 ? `<div><img src="${icon2.src}" alt="Icon" style="width: 35px; height: 35px;"></div>` : '') +
                         `<div>${input2.value || 'Text 2'}</div>`;
-                    bottom.innerHTML = (icon5 ? `<div><img src="${icon5.src}" alt="Icon" style="width: 35px; height: 35px;"></div>` : '') +
-                        `<div>${input5.value || 'Text 5'}</div>`;
+
+                    // Position 5: Text above, icon below
+                    bottom.innerHTML = `<div>${input5.value || 'Text 5'}</div>` +
+                        (icon5 ? `<div><img src="${icon5.src}" alt="Icon" style="width: 35px; height: 35px; margin-top: 5px;"></div>` : '');
                 } else if (index === 2) {
                     const input3 = iconWithTextOptions[2].querySelector('.icon-with-text-input');
                     const input6 = iconWithTextOptions[5].querySelector('.icon-with-text-input');
                     const icon3 = iconWithTextOptions[2].querySelector('.icon-preview');
                     const icon6 = iconWithTextOptions[5].querySelector('.icon-preview');
 
+                    // Position 3: Icon above, text below (default)
                     top.innerHTML = (icon3 ? `<div><img src="${icon3.src}" alt="Icon" style="width: 35px; height: 35px;"></div>` : '') +
                         `<div>${input3.value || 'Text 3'}</div>`;
-                    bottom.innerHTML = (icon6 ? `<div><img src="${icon6.src}" alt="Icon" style="width: 35px; height: 35px;"></div>` : '') +
-                        `<div>${input6.value || 'Text 6'}</div>`;
+
+                    // Position 6: Text above, icon below
+                    bottom.innerHTML = `<div>${input6.value || 'Text 6'}</div>` +
+                        (icon6 ? `<div><img src="${icon6.src}" alt="Icon" style="width: 35px; height: 35px; margin-top: 5px;"></div>` : '');
                 }
             });
         }
-
         // Function to get all text values
         function getTextValues() {
             const textValues = {
@@ -1157,13 +1236,790 @@
         updatePreview('normal');
     </script>
     <script>
-    // Block page if not logged in
-    const isLoggedIn = sessionStorage.getItem('lumi_authenticated');
+        // Block page if not logged in
+        const isLoggedIn = sessionStorage.getItem('lumi_authenticated');
 
-    if (!isLoggedIn) {
-        window.location.href = 'login.html';
+        if (!isLoggedIn) {
+            window.location.href = 'login.html';
+        }
+
+// Helper function to better extract icon positions from preview
+function analyzePreviewStructure(html) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    
+    const analysis = {
+        boxes: [],
+        type: 'unknown'
+    };
+    
+    // Analyze each box
+    for (let i = 1; i <= 3; i++) {
+        const box = doc.getElementById(`box${i}`);
+        if (box) {
+            const boxAnalysis = {
+                id: `box${i}`,
+                top: { type: 'empty', content: '' },
+                bottom: { type: 'empty', content: '' }
+            };
+            
+            const top = box.querySelector('.box-top');
+            const bottom = box.querySelector('.box-bottom');
+            
+            if (top) {
+                const img = top.querySelector('img');
+                if (img) {
+                    boxAnalysis.top.type = 'icon';
+                    boxAnalysis.top.content = img.src;
+                    boxAnalysis.top.text = top.textContent.replace(img.outerHTML, '').trim();
+                } else {
+                    boxAnalysis.top.type = 'text';
+                    boxAnalysis.top.content = top.textContent.trim();
+                }
+            }
+            
+            if (bottom) {
+                const img = bottom.querySelector('img');
+                if (img) {
+                    boxAnalysis.bottom.type = 'icon';
+                    boxAnalysis.bottom.content = img.src;
+                    boxAnalysis.bottom.text = bottom.textContent.replace(img.outerHTML, '').trim();
+                } else {
+                    boxAnalysis.bottom.type = 'text';
+                    boxAnalysis.bottom.content = bottom.textContent.trim();
+                }
+            }
+            
+            analysis.boxes.push(boxAnalysis);
+        }
     }
-</script>
+    
+    // Determine type based on analysis
+    const hasIcons = analysis.boxes.some(box => box.top.type === 'icon' || box.bottom.type === 'icon');
+    const hasText = analysis.boxes.some(box => 
+        (box.top.type === 'text' && box.top.content) || 
+        (box.bottom.type === 'text' && box.bottom.content)
+    );
+    
+    if (hasIcons && hasText) {
+        analysis.type = 'textWithIcon';
+    } else if (hasIcons) {
+        analysis.type = 'icon';
+    } else if (hasText) {
+        analysis.type = 'text';
+    } else {
+        analysis.type = 'normal';
+    }
+    
+    return analysis;
+}
+
+// ========== EDIT MODE FUNCTIONALITY ==========
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if we're in edit mode
+    const isEditing = sessionStorage.getItem('isEditing') === 'true';
+    const editDesignDataStr = sessionStorage.getItem('editDesignData');
+    
+    if (isEditing && editDesignDataStr) {
+        try {
+            const design = JSON.parse(editDesignDataStr);
+            console.log('Edit mode activated for design:', design);
+            
+            // Update page title
+            const titleElement = document.querySelector('.title');
+            if (titleElement) {
+                titleElement.innerHTML = 'Edit Design <span style="font-size: 14px; color: #3b82f6;">(Editing: ' + design.fileName + ')</span>';
+            }
+            
+            // Function to extract icons and text from preview HTML
+            function extractDesignDataFromPreview(html) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                const data = {
+                    icons: {},
+                    texts: {},
+                    type: 'normal'
+                };
+                
+                // Extract all image sources with their positions
+                for (let i = 1; i <= 3; i++) {
+                    const topBox = doc.querySelector(`#box${i}-top`);
+                    const bottomBox = doc.querySelector(`#box${i}-bottom`);
+                    
+                    // Check top box
+                    if (topBox) {
+                        const img = topBox.querySelector('img');
+                        if (img && img.src) {
+                            data.icons[`top${i}`] = img.src;
+                            // Check if there's also text
+                            const textContent = topBox.textContent.trim();
+                            if (textContent && !textContent.includes('—')) {
+                                data.texts[`text${i}`] = textContent;
+                            }
+                        } else {
+                            const text = topBox.textContent.trim();
+                            if (text && text !== '—') {
+                                data.texts[`text${i}`] = text;
+                            }
+                        }
+                    }
+                    
+                    // Check bottom box
+                    if (bottomBox) {
+                        const img = bottomBox.querySelector('img');
+                        if (img && img.src) {
+                            data.icons[`bottom${i}`] = img.src;
+                            // Check if there's also text
+                            const textContent = bottomBox.textContent.trim();
+                            if (textContent && !textContent.includes('—')) {
+                                data.texts[`text${i + 3}`] = textContent;
+                            }
+                        } else {
+                            const text = bottomBox.textContent.trim();
+                            if (text && text !== '—') {
+                                data.texts[`text${i + 3}`] = text;
+                            }
+                        }
+                    }
+                }
+                
+                // Determine type
+                const hasIcons = Object.keys(data.icons).length > 0;
+                const hasText = Object.keys(data.texts).length > 0;
+                
+                if (hasIcons && hasText) {
+                    data.type = 'textWithIcon';
+                } else if (hasIcons) {
+                    data.type = 'icon';
+                } else if (hasText) {
+                    data.type = 'text';
+                } else {
+                    data.type = 'normal';
+                }
+                
+                return data;
+            }
+            
+            // Extract data from saved design
+            const extractedData = extractDesignDataFromPreview(design.previewHTML);
+            console.log('Extracted design data:', extractedData);
+            
+            // Store for later use
+            window.editDesignData = extractedData;
+            
+            // 1. Apply saved color
+            setTimeout(() => {
+                const colorOptions = document.querySelectorAll('.color-option');
+                colorOptions.forEach(option => {
+                    const colorValue = option.getAttribute('data-color');
+                    const colorName = option.getAttribute('data-name');
+                    
+                    if (colorValue === design.color || colorName === design.colorName) {
+                        option.click();
+                    }
+                });
+            }, 100);
+            
+            // 2. Apply engraving type and populate data
+            setTimeout(() => {
+                const engravingOptions = document.querySelectorAll('.engraving-option');
+                let typeApplied = false;
+                
+                engravingOptions.forEach(option => {
+                    const type = option.getAttribute('data-type');
+                    if (type === extractedData.type || type === design.engravingType) {
+                        option.click();
+                        typeApplied = true;
+                        
+                        // Populate data based on type
+                        setTimeout(() => {
+                            if (type === 'text') {
+                                populateTextData(extractedData.texts);
+                            } else if (type === 'icon') {
+                                populateIconData(extractedData.icons);
+                            } else if (type === 'textWithIcon') {
+                                populateTextWithIconData(extractedData.icons, extractedData.texts);
+                            }
+                        }, 500); // Increased delay to ensure UI is ready
+                    }
+                });
+                
+                if (!typeApplied) {
+                    // Default to normal if type not found
+                    document.querySelector('.engraving-option[data-type="normal"]').click();
+                }
+            }, 300);
+            
+            // Function to populate text data
+            function populateTextData(texts) {
+                console.log('Populating text data:', texts);
+                
+                const textInputs = document.querySelectorAll('.text-input');
+                if (textInputs.length >= 6) {
+                    textInputs[0].value = texts.text1 || '';
+                    textInputs[1].value = texts.text2 || '';
+                    textInputs[2].value = texts.text3 || '';
+                    textInputs[3].value = texts.text4 || '';
+                    textInputs[4].value = texts.text5 || '';
+                    textInputs[5].value = texts.text6 || '';
+                    
+                    // Update preview
+                    setTimeout(() => updateTextPreview(), 100);
+                }
+            }
+            
+            // Function to populate icon data
+            function populateIconData(icons) {
+                console.log('Populating icon data:', icons);
+                
+                // Map icon positions to UI positions
+                const positionMap = {
+                    'top1': 1, 'top2': 2, 'top3': 3,
+                    'bottom1': 4, 'bottom2': 5, 'bottom3': 6
+                };
+                
+                // Process each icon
+                Object.keys(icons).forEach(key => {
+                    const uiPosition = positionMap[key];
+                    const iconSrc = icons[key];
+                    
+                    if (uiPosition && iconSrc) {
+                        // Extract icon number from src
+                        const match = iconSrc.match(/\/(\d+)\.png$/);
+                        if (match && match[1]) {
+                            const iconNumber = parseInt(match[1]);
+                            console.log(`Setting icon ${iconNumber} at position ${uiPosition}`);
+                            
+                            // Select the icon in the UI
+                            selectIconForPosition(iconNumber, uiPosition, 'icon');
+                        }
+                    }
+                });
+                
+                // Update preview after all icons are set
+                setTimeout(() => updateIconPreview(), 300);
+            }
+            
+            // Function to populate text with icon data
+            function populateTextWithIconData(icons, texts) {
+                console.log('Populating text with icon data:', icons, texts);
+                
+                // Populate text inputs
+                const textInputs = document.querySelectorAll('.icon-with-text-input');
+                if (textInputs.length >= 6) {
+                    textInputs[0].value = texts.text1 || '';
+                    textInputs[1].value = texts.text2 || '';
+                    textInputs[2].value = texts.text3 || '';
+                    textInputs[3].value = texts.text4 || '';
+                    textInputs[4].value = texts.text5 || '';
+                    textInputs[5].value = texts.text6 || '';
+                }
+                
+                // Map icon positions to UI positions
+                const positionMap = {
+                    'top1': 1, 'top2': 2, 'top3': 3,
+                    'bottom1': 4, 'bottom2': 5, 'bottom3': 6
+                };
+                
+                // Process each icon
+                Object.keys(icons).forEach(key => {
+                    const uiPosition = positionMap[key];
+                    const iconSrc = icons[key];
+                    
+                    if (uiPosition && iconSrc) {
+                        // Extract icon number from src
+                        const match = iconSrc.match(/\/(\d+)\.png$/);
+                        if (match && match[1]) {
+                            const iconNumber = parseInt(match[1]);
+                            console.log(`Setting icon ${iconNumber} at position ${uiPosition} with text`);
+                            
+                            // Select the icon in the UI
+                            selectIconForPosition(iconNumber, uiPosition, 'textWithIcon');
+                        }
+                    }
+                });
+                
+                // Update preview
+                setTimeout(() => updateIconWithTextPreview(), 300);
+            }
+            
+            // Function to select icon for a specific position
+            function selectIconForPosition(iconNumber, position, type) {
+                // Find the icon option element
+                let option;
+                if (type === 'icon') {
+                    option = document.querySelector(`.icon-option[data-position="${position}"]`);
+                } else if (type === 'textWithIcon') {
+                    option = document.querySelector(`.icon-with-text-option[data-position="${position}"]`);
+                }
+                
+                if (!option) {
+                    console.error(`Could not find option for position ${position}, type ${type}`);
+                    return;
+                }
+                
+                // Hide the plus icon
+                const iconPlus = option.querySelector('.icon-plus');
+                if (iconPlus) {
+                    iconPlus.style.display = 'none';
+                }
+                
+                // Create or update the icon image
+                let iconImg = option.querySelector('.icon-preview');
+                if (!iconImg) {
+                    iconImg = document.createElement('img');
+                    iconImg.className = 'icon-preview';
+                    
+                    // Insert in correct place based on type
+                    if (type === 'icon') {
+                        const iconText = option.querySelector('.icon-text');
+                        if (iconText) {
+                            option.insertBefore(iconImg, iconText);
+                        } else {
+                            option.appendChild(iconImg);
+                        }
+                    } else if (type === 'textWithIcon') {
+                        const textInput = option.querySelector('.icon-with-text-input');
+                        if (textInput) {
+                            option.insertBefore(iconImg, textInput);
+                        } else {
+                            option.appendChild(iconImg);
+                        }
+                    }
+                }
+                
+                // Set the icon image
+                iconImg.src = `./icons/${iconNumber}.png`;
+                iconImg.alt = `Icon ${iconNumber}`;
+                iconImg.style.width = '32px';
+                iconImg.style.height = '32px';
+                
+                // Mark as selected
+                option.classList.add('selected');
+                
+                // Store icon number for reference
+                option.setAttribute('data-icon-number', iconNumber);
+                
+                console.log(`Icon ${iconNumber} set at position ${position}`);
+            }
+            
+            // 3. Modify save button for edit mode
+            modifySaveButtonForEditMode(design.id);
+            
+            // 4. Add cancel button
+            addCancelEditButton();
+            
+        } catch (error) {
+            console.error('Error loading edit data:', error);
+        }
+    }
+    
+    // Function to modify save button for edit mode
+    function modifySaveButtonForEditMode(designId) {
+        const saveBtn = document.getElementById('save-config');
+        if (!saveBtn) return;
+        
+        // Change button appearance
+        saveBtn.textContent = 'Update Design';
+        saveBtn.style.backgroundColor = '#3b82f6';
+        
+        // Remove existing event listeners by cloning
+        const newSaveBtn = saveBtn.cloneNode(true);
+        saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+        
+        // Add new event handler
+        newSaveBtn.addEventListener('click', function handleEditSave(e) {
+            e.preventDefault();
+            
+            // Get current configuration
+            const selectedColor = document.querySelector('.color-option.selected').getAttribute('data-color');
+            const selectedColorName = document.querySelector('.color-option.selected').getAttribute('data-name');
+            const selectedEngravingType = document.querySelector('.engraving-option.selected').getAttribute('data-type');
+            
+            // Get the preview HTML
+            const square = document.querySelector('.square');
+            const previewHTML = square.innerHTML;
+            
+            // Get text values
+            const textValues = getTextValues();
+            
+            // Update design
+            const updatedDesign = {
+                id: designId,
+                color: selectedColor,
+                colorName: selectedColorName,
+                engravingType: selectedEngravingType,
+                previewHTML: previewHTML,
+                fileName: new Date().toLocaleString(),
+                timestamp: new Date().toISOString(),
+                textValues: textValues
+            };
+            
+            // Save to localStorage
+            let designs = JSON.parse(localStorage.getItem('lumiDesigns') || '[]');
+            const index = designs.findIndex(d => d.id === designId);
+            
+            if (index !== -1) {
+                designs[index] = updatedDesign;
+                localStorage.setItem('lumiDesigns', JSON.stringify(designs));
+                
+                // Clear edit mode
+                sessionStorage.removeItem('editDesignData');
+                sessionStorage.removeItem('isEditing');
+                sessionStorage.removeItem('editDesignId');
+                
+                alert('Design updated successfully!');
+                window.location.href = 'designs.html';
+            } else {
+                alert('Design not found! Creating new design instead.');
+                
+                // Create new design
+                updatedDesign.id = Date.now().toString();
+                designs.push(updatedDesign);
+                localStorage.setItem('lumiDesigns', JSON.stringify(designs));
+                
+                sessionStorage.clear();
+                window.location.href = 'designs.html';
+            }
+        });
+    }
+    
+    // Function to add cancel edit button
+// Function to add cancel edit button
+function addCancelEditButton() {
+    if (sessionStorage.getItem('isEditing') !== 'true') return;
+    
+    // Create cancel button
+    const cancelBtn = document.createElement('button');
+    cancelBtn.id = 'cancelEditBtn';
+    cancelBtn.textContent = 'Cancel Edit';
+    cancelBtn.style.cssText = `
+        background-color: #6b7280;
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 10px;
+    `;
+    
+    cancelBtn.addEventListener('click', () => {
+        if (confirm('Cancel editing? All unsaved changes will be lost.')) {
+            // Only remove edit-related sessionStorage items
+            sessionStorage.removeItem('editDesignData');
+            sessionStorage.removeItem('isEditing');
+            sessionStorage.removeItem('editDesignId');
+            
+            // Redirect to configurator page (not designs.html)
+            window.location.href = 'index.html';
+        }
+    });
+    
+    // Add to page
+    const saveBtnContainer = document.querySelector('.save-btn-container');
+    if (saveBtnContainer) {
+        saveBtnContainer.appendChild(cancelBtn);
+    }
+}
+});
+
+
+// Cancel edit functionality
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const cancelEditContainer = document.getElementById('cancelEditContainer');
+
+        if (cancelEditBtn) {
+            cancelEditBtn.addEventListener('click', () => {
+                if (confirm('Cancel editing? All unsaved changes will be lost.')) {
+                    // Clear edit mode data
+                    sessionStorage.removeItem('editDesignData');
+                    sessionStorage.removeItem('isEditing');
+                    sessionStorage.removeItem('editDesignId');
+
+                    // Reload page to reset
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+
+        // Show cancel button only in edit mode
+        if (sessionStorage.getItem('isEditing') === 'true') {
+            if (cancelEditContainer) {
+                cancelEditContainer.style.display = 'block';
+            }
+        }
+
+
+        // Helper function to extract icon number from icon selection
+function getIconNumberFromElement(element) {
+    if (!element) return null;
+    
+    // Check data-icon-number attribute first
+    const iconNumber = element.getAttribute('data-icon-number');
+    if (iconNumber) return parseInt(iconNumber);
+    
+    // Check img src
+    const img = element.querySelector('img');
+    if (img && img.src) {
+        const match = img.src.match(/\/(\d+)\.png$/);
+        if (match && match[1]) {
+            return parseInt(match[1]);
+        }
+    }
+    
+    return null;
+}
+
+
+// ========== SWITCH LABEL MODAL FUNCTIONS ==========
+
+// Open switch label modal
+function openSwitchLabelModal() {
+    const modal = document.getElementById('switchLabelModal');
+    const input = document.getElementById('switchLabelInput');
+    const charCount = document.getElementById('charCount');
+    
+    // Reset input
+    input.value = '';
+    charCount.textContent = '0';
+    
+    // Focus on input
+    modal.style.display = 'flex';
+    setTimeout(() => input.focus(), 100);
+}
+
+// Close switch label modal
+function closeSwitchLabelModal() {
+    document.getElementById('switchLabelModal').style.display = 'none';
+}
+
+// Character counter for input
+document.addEventListener('DOMContentLoaded', function() {
+    const switchLabelInput = document.getElementById('switchLabelInput');
+    if (switchLabelInput) {
+        switchLabelInput.addEventListener('input', function() {
+            const charCount = document.getElementById('charCount');
+            charCount.textContent = this.value.length;
+        });
+        
+        // Allow Enter key to save
+        switchLabelInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                confirmSaveDesign();
+            }
+        });
+    }
+});
+
+// Confirm save design
+function confirmSaveDesign() {
+    const switchLabel = document.getElementById('switchLabelInput').value.trim();
+    
+    if (!switchLabel) {
+        alert('Please enter a name/label for this design.');
+        return;
+    }
+    
+    if (switchLabel.length > 30) {
+        alert('Label must be 30 characters or less.');
+        return;
+    }
+    
+    // Update the preview with the switch label
+    updatePreviewWithSwitchLabel(switchLabel);
+    
+    // Save the design
+    saveDesignWithLabel(switchLabel);
+    
+    // Close modal
+    closeSwitchLabelModal();
+}
+
+// Function to update preview with switch label
+function updatePreviewWithSwitchLabel(switchLabel) {
+    const summaryPreview = document.querySelector('.summary-preview');
+    if (!summaryPreview) return;
+    
+    // Find or create the switch label display
+    let labelDisplay = document.querySelector('.switch-label-display');
+    
+    if (!labelDisplay) {
+        // Create label display
+        labelDisplay = document.createElement('div');
+        labelDisplay.className = 'switch-label-display';
+        labelDisplay.style.cssText = `
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            text-align: center;
+        `;
+        
+        // Add to summary preview
+        summaryPreview.appendChild(labelDisplay);
+    }
+    
+    // Update label display content
+    labelDisplay.innerHTML = `
+        <div style="font-weight: 600; color: #1e293b; margin-bottom: 5px;">Switch Label:</div>
+        <div style="font-size: 18px; color: #3b82f6; font-weight: 500;">${switchLabel}</div>
+    `;
+}
+
+// Function to save design with label
+function saveDesignWithLabel(switchLabel) {
+    // Get current configuration
+    const selectedColor = document.querySelector('.color-option.selected').getAttribute('data-color');
+    const selectedColorName = document.querySelector('.color-option.selected').getAttribute('data-name');
+    const selectedEngravingType = document.querySelector('.engraving-option.selected').getAttribute('data-type');
+    
+    // Get the preview HTML
+    const square = document.querySelector('.square');
+    const previewHTML = square.innerHTML;
+    
+    // Get text values for all 6 positions
+    const textValues = getTextValues();
+    
+    // Create design object with switch label
+    const design = {
+        id: Date.now().toString(),
+        color: selectedColor,
+        colorName: selectedColorName,
+        engravingType: selectedEngravingType,
+        previewHTML: previewHTML,
+        fileName: new Date().toLocaleString(),
+        switchLabel: switchLabel, // Add the switch label
+        timestamp: new Date().toISOString(),
+        textValues: textValues
+    };
+    
+    // Get existing designs from localStorage
+    let designs = JSON.parse(localStorage.getItem('lumiDesigns') || '[]');
+    
+    // Add new design
+    designs.push(design);
+    
+    // Save back to localStorage
+    localStorage.setItem('lumiDesigns', JSON.stringify(designs));
+    
+    // Show success message
+    alert(`Design saved successfully with label: "${switchLabel}"`);
+    
+    // Optional: Redirect to designs page
+    // window.location.href = 'designs.html';
+}
+
+// Update the existing save button to open modal instead
+document.addEventListener('DOMContentLoaded', function() {
+    const saveBtn = document.getElementById('save-config');
+    if (saveBtn) {
+        // Remove existing click listener
+        const newSaveBtn = saveBtn.cloneNode(true);
+        saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+        
+        // Add new click listener
+        newSaveBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Check if we're in edit mode
+            const isEditing = sessionStorage.getItem('isEditing') === 'true';
+            const editDesignId = sessionStorage.getItem('editDesignId');
+            
+            if (isEditing && editDesignId) {
+                // For edit mode, ask what to do
+                const userChoice = confirm("You are editing an existing design. Do you want to:\n\n• 'OK' - Update the existing design\n• 'Cancel' - Save as a new design");
+                
+                if (userChoice) {
+                    // Update existing design
+                    updateExistingDesign(editDesignId);
+                } else {
+                    // Save as new design - open modal for label
+                    openSwitchLabelModal();
+                }
+            } else {
+                // Normal save - open modal for label
+                openSwitchLabelModal();
+            }
+        });
+    }
+});
+
+// Function to update existing design (for edit mode)
+function updateExistingDesign(designId) {
+    const switchLabel = prompt("Enter a new name/label for this updated design:", "Updated Design");
+    
+    if (!switchLabel) {
+        alert('Please enter a name or label for this design.');
+        return;
+    }
+    
+    // Get current configuration
+    const selectedColor = document.querySelector('.color-option.selected').getAttribute('data-color');
+    const selectedColorName = document.querySelector('.color-option.selected').getAttribute('data-name');
+    const selectedEngravingType = document.querySelector('.engraving-option.selected').getAttribute('data-type');
+    
+    // Get the preview HTML
+    const square = document.querySelector('.square');
+    const previewHTML = square.innerHTML;
+    
+    // Get text values
+    const textValues = getTextValues();
+    
+    // Update the preview with switch label
+    updatePreviewWithSwitchLabel(switchLabel);
+    
+    // Update design object
+    const updatedDesign = {
+        id: designId,
+        color: selectedColor,
+        colorName: selectedColorName,
+        engravingType: selectedEngravingType,
+        previewHTML: previewHTML,
+        fileName: new Date().toLocaleString(),
+        switchLabel: switchLabel,
+        timestamp: new Date().toISOString(),
+        textValues: textValues
+    };
+    
+    // Get existing designs from localStorage
+    let designs = JSON.parse(localStorage.getItem('lumiDesigns') || '[]');
+    
+    // Find and update the design
+    const designIndex = designs.findIndex(d => d.id === designId);
+    if (designIndex !== -1) {
+        designs[designIndex] = updatedDesign;
+        
+        // Save back to localStorage
+        localStorage.setItem('lumiDesigns', JSON.stringify(designs));
+        
+        // Clear edit mode data
+        sessionStorage.removeItem('editDesignData');
+        sessionStorage.removeItem('isEditing');
+        sessionStorage.removeItem('editDesignId');
+        
+        alert(`Design updated successfully with label: "${switchLabel}"`);
+        
+        // Redirect to designs page
+        setTimeout(() => {
+            window.location.href = 'designs.html';
+        }, 1000);
+    } else {
+        alert('Design not found! Saving as new design.');
+        openSwitchLabelModal();
+    }
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', (e) => {
+    const modal = document.getElementById('switchLabelModal');
+    if (e.target === modal) {
+        closeSwitchLabelModal();
+    }
+});
+
+    </script>
 
 </body>
 
